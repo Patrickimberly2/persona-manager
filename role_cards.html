@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whole-Life Roles — Master Prompt Paragraphs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Fonts */
+        .font-header { font-family: 'Cinzel', serif; }
+        .font-body { font-family: 'Lato', sans-serif; }
+        
+        /* Screen Card Dimensions */
+        .card-container {
+            width: 320px;
+            height: 448px; /* Screen display size */
+            transition: transform 0.3s ease;
+            scroll-margin-top: 2rem;
+        }
+
+        .card-container:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Card Textures/Gradients */
+        .bg-parchment {
+            background-color: #f3e5ab;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E");
+        }
+
+        /* --- PRINT / PDF GENERATION STYLES --- */
+        @media print {
+            @page {
+                size: 8.5in 11in; /* Letter size */
+                margin: 0.5in;
+            }
+
+            /* Hide UI elements */
+            .no-print, #toc, footer, .print-hide {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Force Title Page Height */
+            #title-page {
+                height: 100vh !important;
+                page-break-after: always;
+                border: none !important;
+                color: black !important;
+            }
+            #title-page h1 { color: #d97706 !important; text-shadow: none; }
+            #title-page i { color: #d97706 !important; opacity: 0.2; }
+            #title-page .text-amber-200 { color: #92400e !important; }
+            #title-page .bg-gray-900\/90 { background: transparent !important; border: 4px solid #d97706; }
+
+            /* Card Grid for Print */
+            .print-grid {
+                display: block !important;
+            }
+
+            /* The 5x7 Card Spec */
+            .card-container {
+                width: 5in !important;
+                height: 7in !important;
+                margin: 0 auto 1in auto !important; /* Center and add spacing */
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-after: always; /* Force 1 card per page for safety, or let flow */
+                transform: none !important;
+                box-shadow: none !important;
+                border: 2px solid #000 !important;
+            }
+            
+            /* Typography adjustments for print */
+            .card-container p { font-size: 12pt !important; line-height: 1.4 !important; }
+            .card-container h2 { font-size: 24pt !important; }
+            .card-container i { text-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 font-body min-h-screen text-gray-200">
+
+    <!-- Print Button (Fixed) -->
+    <button onclick="window.print()" class="no-print fixed top-6 right-6 z-50 bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2 border-2 border-white/20">
+        <i class="fas fa-file-pdf text-xl"></i> Save as PDF
+    </button>
+
+    <!-- FRONT / TITLE PAGE -->
+    <section id="title-page" class="min-h-screen flex flex-col justify-center items-center text-center relative overflow-hidden bg-gray-900 border-b-8 border-amber-900/50 p-4">
+        <!-- Background Decor -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none flex justify-center items-center">
+            <i class="fas fa-compass text-[40rem] text-amber-500"></i>
+        </div>
+
+        <div class="z-10 p-8 md:p-12 border-4 border-amber-600/30 rounded-lg bg-gray-900/90 backdrop-blur-sm max-w-4xl mx-auto shadow-2xl">
+            <h1 class="font-header text-4xl md:text-6xl text-amber-500 mb-6 font-black drop-shadow-lg leading-tight border-b-2 border-amber-600/50 pb-4">
+                Whole-Life Roles<br>
+                <span class="text-2xl md:text-3xl block mt-4 text-amber-200">— Master Prompt Paragraphs —</span>
+            </h1>
+            
+            <!-- Paragraph Template Example -->
+            <div class="text-left bg-black/40 p-6 rounded border border-amber-900/50 print-hide">
+                <h2 class="text-2xl text-amber-200 font-header mb-3 font-bold">How to use this deck:</h2>
+                <p class="text-gray-300 leading-relaxed font-body text-sm md:text-base">
+                    This file is designed to be saved as a PDF. Click the red button in the top right corner. Ensure "Background Graphics" is enabled in your print settings. This will generate a deck of 5x7" cards, one per page (or scaled to fit), containing your master prompts.
+                </p>
+            </div>
+            
+            <a href="#toc" class="mt-8 inline-block px-8 py-3 bg-amber-700 hover:bg-amber-600 text-white rounded border border-amber-500 font-header font-bold text-lg transition shadow-[0_0_20px_rgba(245,158,11,0.3)] no-print">
+                View Roles <i class="fas fa-chevron-down ml-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-4">
+        
+        <!-- TABLE OF CONTENTS PAGE (Hidden in Print) -->
+        <section id="toc" class="py-20 flex flex-col items-center">
+            <div class="w-full max-w-5xl bg-gray-800 rounded-xl p-8 md:p-12 shadow-2xl border border-gray-700">
+                <h2 class="font-header text-4xl text-center text-white mb-2">Table of Contents</h2>
+                <p class="text-center text-gray-400 mb-10 italic">Select a Role to View Details</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                    <!-- TOC Links -->
+                    <a href="#inner-steward" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-purple-900/30 hover:border-purple-500 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-fingerprint text-2xl mr-4 text-purple-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">1. Inner Steward (Self & Identity)</span>
+                    </a>
+                    <a href="#health-manager" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-red-900/30 hover:border-red-500 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-heartbeat text-2xl mr-4 text-red-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">2. Health & Energy Manager</span>
+                    </a>
+                    <a href="#relationship-steward" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-pink-900/30 hover:border-pink-500 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-user-friends text-2xl mr-4 text-pink-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">3. Relationship Steward</span>
+                    </a>
+                    <a href="#parent-caregiver" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-orange-900/30 hover:border-orange-500 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-hands-holding-child text-2xl mr-4 text-orange-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">4. Parent & Caregiver</span>
+                    </a>
+                    <a href="#household-operator" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-teal-900/30 hover:border-teal-500 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-home text-2xl mr-4 text-teal-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">5. Household & Life Operator</span>
+                    </a>
+                    <a href="#property-manager" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-stone-700 hover:border-stone-400 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-tools text-2xl mr-4 text-stone-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">6. Property & Projects Manager</span>
+                    </a>
+                    <a href="#founder" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-yellow-900/30 hover:border-yellow-500 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-briefcase text-2xl mr-4 text-yellow-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">7. Founder / Value Builder</span>
+                    </a>
+                    <a href="#creator" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-indigo-900/30 hover:border-indigo-500 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-pen-nib text-2xl mr-4 text-indigo-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">8. Creator / Communicator</span>
+                    </a>
+                    <a href="#financial-steward" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-emerald-900/30 hover:border-emerald-500 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-coins text-2xl mr-4 text-emerald-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">9. Financial Steward</span>
+                    </a>
+                    <a href="#digital-operator" class="group flex items-center p-4 rounded bg-gray-700 hover:bg-cyan-900/30 hover:border-cyan-500 border border-transparent transition cursor-pointer">
+                        <i class="fas fa-network-wired text-2xl mr-4 text-cyan-400"></i>
+                        <span class="font-header text-base font-bold text-gray-300 group-hover:text-white">10. Computer & Digital Systems</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="my-12 w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
+        </section>
+
+        <!-- CARDS GRID -->
+        <div class="flex flex-wrap justify-center gap-8 pb-20 print-grid">
+
+            <!-- 1. Inner Steward -->
+            <div id="inner-steward" class="card-container relative overflow-hidden rounded-xl border-4 border-purple-900 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-purple-900 p-2 text-center border-b-4 border-purple-950">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Inner Steward</h2>
+                    <div class="text-purple-200 text-[10px] uppercase tracking-widest">Self & Identity</div>
+                </div>
+                <div class="h-32 bg-purple-950/50 flex items-center justify-center relative group">
+                    <i class="fas fa-fingerprint text-5xl text-purple-800 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-purple-900"></div>
+                </div>
+                <div class="flex-1 bg-parchment p-4 relative text-gray-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Inner Steward of my life and identity. I am responsible for my emotional health, mindset, self-awareness, and internal alignment across all areas of my life. This role governs how I process stress, regulate emotions, set and maintain personal boundaries, manage my inner dialogue, and sustain mental clarity and resilience over time. It influences how I show up in my family, relationships, work, and personal growth, ensuring that my decisions are grounded, values-aligned, and sustainable. Here are the details about my inner world, current emotional state, recurring patterns, challenges, goals, constraints, coping strategies, values, and personal growth priorities. Create a master prompt for this role. Ask me all the questions you need to fully understand my internal landscape so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-purple-950 text-purple-200 text-[10px] text-center p-1 font-header">
+                    Role ID: #001
+                </div>
+            </div>
+
+            <!-- 2. Health & Energy Manager -->
+            <div id="health-manager" class="card-container relative overflow-hidden rounded-xl border-4 border-red-900 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-red-900 p-2 text-center border-b-4 border-red-950">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Health Manager</h2>
+                    <div class="text-red-200 text-[10px] uppercase tracking-widest">Energy & Vitality</div>
+                </div>
+                <div class="h-32 bg-red-950/50 flex items-center justify-center relative">
+                    <i class="fas fa-heartbeat text-5xl text-red-800 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-red-900"></div>
+                </div>
+                <div class="flex-1 bg-slate-100 p-4 relative text-slate-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Health and Energy Manager of my life. I am responsible for maintaining my physical health, daily energy, and long-term vitality so I can sustainably meet my personal, family, and professional responsibilities. This role governs sleep, nutrition, movement, energy rhythms, recovery, preventative care, and health-related habits. It ensures that my body supports the life I am building rather than becoming a limiting factor. Here are the details about my current health, energy levels, routines, constraints, challenges, goals, medical considerations, and lifestyle preferences. Create a master prompt for this role. Ask me all the questions you need to fully understand my physical context so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-red-950 text-red-200 text-[10px] text-center p-1 font-header">
+                    Role ID: #002
+                </div>
+            </div>
+
+            <!-- 3. Relationship Steward -->
+            <div id="relationship-steward" class="card-container relative overflow-hidden rounded-xl border-4 border-pink-700 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-pink-700 p-2 text-center border-b-4 border-pink-900">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Relationship Steward</h2>
+                    <div class="text-pink-100 text-[10px] uppercase tracking-widest">Marriage & Adult Bonds</div>
+                </div>
+                <div class="h-32 bg-pink-900/30 flex items-center justify-center relative">
+                    <i class="fas fa-user-friends text-5xl text-pink-600 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-pink-700"></div>
+                </div>
+                <div class="flex-1 bg-white p-4 relative text-gray-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Relationship Steward for my marriage and close adult relationships. I am responsible for nurturing emotional connection, trust, communication, and long-term relational health. This role governs how I show up as a partner, how conflict is handled and repaired, how intimacy and quality time are prioritized, and how shared goals and values are maintained over time. It ensures my closest relationships remain strong, supportive, and aligned as life evolves. Here are the details about my relationships, communication patterns, challenges, strengths, goals, boundaries, constraints, and relational values. Create a master prompt for this role. Ask me all the questions you need to fully understand my relational context so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-pink-900 text-pink-100 text-[10px] text-center p-1 font-header">
+                    Role ID: #003
+                </div>
+            </div>
+
+            <!-- 4. Parent & Caregiver -->
+            <div id="parent-caregiver" class="card-container relative overflow-hidden rounded-xl border-4 border-orange-600 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-orange-600 p-2 text-center border-b-4 border-orange-800">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Parent & Caregiver</h2>
+                    <div class="text-orange-100 text-[10px] uppercase tracking-widest">Children + Pets</div>
+                </div>
+                <div class="h-32 bg-orange-900/30 flex items-center justify-center relative">
+                    <i class="fas fa-hands-holding-child text-5xl text-orange-500 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-orange-600"></div>
+                </div>
+                <div class="flex-1 bg-amber-50 p-4 relative text-gray-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Parent and Caregiver for my children and pets. I am responsible for their safety, wellbeing, routines, emotional support, and long-term development. This role governs how I provide structure, guidance, consistency, and care, as well as how I balance authority with empathy and presence. It includes daily caregiving, decision-making related to education, health, discipline, and pet care, and adapting my approach as needs change over time. Here are the details about my dependents, routines, challenges, values, goals, constraints, resources, and caregiving priorities. Create a master prompt for this role. Ask me all the questions you need to fully understand my caregiving responsibilities so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-orange-800 text-orange-100 text-[10px] text-center p-1 font-header">
+                    Role ID: #004
+                </div>
+            </div>
+
+            <!-- 5. Household & Life Operator -->
+            <div id="household-operator" class="card-container relative overflow-hidden rounded-xl border-4 border-teal-700 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-teal-700 p-2 text-center border-b-4 border-teal-900">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Household Op.</h2>
+                    <div class="text-teal-100 text-[10px] uppercase tracking-widest">Logistics & Admin</div>
+                </div>
+                <div class="h-32 bg-teal-900/30 flex items-center justify-center relative">
+                    <i class="fas fa-home text-5xl text-teal-500 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-teal-700"></div>
+                </div>
+                <div class="flex-1 bg-stone-100 p-4 relative text-stone-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Household and Life Operator for my home and daily logistics. I am responsible for ensuring that my household runs smoothly, efficiently, and with minimal friction. This role governs home organization, cleaning systems, scheduling, calendars, household supplies, vendor coordination, routines, and day-to-day operational decisions. It exists to reduce cognitive load, prevent chaos, and create a stable environment that supports my family and work. Here are the details about my household systems, routines, challenges, constraints, resources, preferences, and operational priorities. Create a master prompt for this role. Ask me all the questions you need to fully understand how my household operates so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-teal-900 text-teal-100 text-[10px] text-center p-1 font-header">
+                    Role ID: #005
+                </div>
+            </div>
+
+            <!-- 6. Property & Projects Manager -->
+            <div id="property-manager" class="card-container relative overflow-hidden rounded-xl border-4 border-stone-600 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-stone-600 p-2 text-center border-b-4 border-stone-800">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Property Manager</h2>
+                    <div class="text-stone-200 text-[10px] uppercase tracking-widest">Remodel & Major Initiatives</div>
+                </div>
+                <div class="h-32 bg-stone-800 flex items-center justify-center relative">
+                    <i class="fas fa-tools text-5xl text-stone-400 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-stone-600"></div>
+                </div>
+                <div class="flex-1 bg-gray-200 p-4 relative text-gray-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Property and Projects Manager for my home and major life initiatives. I am responsible for planning, coordinating, and executing finite projects such as remodeling, renovations, decluttering initiatives, moves, and large purchases. This role governs project scope, timelines, budgets, tradeoffs, vendor and contractor decisions, and execution sequencing. It ensures that large projects are completed efficiently, within constraints, and with minimal disruption to daily life. Here are the details about my current and upcoming projects, constraints, budgets, timelines, priorities, risks, and decision preferences. Create a master prompt for this role. Ask me all the questions you need to fully understand my project landscape so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-stone-800 text-stone-200 text-[10px] text-center p-1 font-header">
+                    Role ID: #006
+                </div>
+            </div>
+
+             <!-- 7. Founder / Value Builder -->
+             <div id="founder" class="card-container relative overflow-hidden rounded-xl border-4 border-yellow-700 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-yellow-700 p-2 text-center border-b-4 border-yellow-900">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Founder</h2>
+                    <div class="text-yellow-100 text-[10px] uppercase tracking-widest">Business Owner</div>
+                </div>
+                <div class="h-32 bg-yellow-900/40 flex items-center justify-center relative">
+                    <i class="fas fa-briefcase text-5xl text-yellow-500 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-yellow-700"></div>
+                </div>
+                <div class="flex-1 bg-yellow-50 p-4 relative text-gray-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Founder and Value Builder of my business. I am responsible for creating value, generating income, and building long-term leverage through products, services, and systems. This role governs business strategy, product development, monetization, pricing, growth decisions, risk management, and long-term vision. It focuses on outcomes, sustainability, and alignment between my business and the life I want to live. Here are the details about my business, revenue, customer base, monetization methods, resources, constraints, goals, and strategic priorities. Create a master prompt for this role. Ask me all the questions you need to fully understand my business context so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-yellow-900 text-yellow-100 text-[10px] text-center p-1 font-header">
+                    Role ID: #007
+                </div>
+            </div>
+
+            <!-- 8. Creator / Communicator -->
+            <div id="creator" class="card-container relative overflow-hidden rounded-xl border-4 border-indigo-800 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-indigo-800 p-2 text-center border-b-4 border-indigo-950">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Creator</h2>
+                    <div class="text-indigo-200 text-[10px] uppercase tracking-widest">Content & Brand Voice</div>
+                </div>
+                <div class="h-32 bg-indigo-900/40 flex items-center justify-center relative">
+                    <i class="fas fa-pen-nib text-5xl text-indigo-500 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-indigo-800"></div>
+                </div>
+                <div class="flex-1 bg-indigo-50 p-4 relative text-gray-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Creator and Communicator for my brand and ideas. I am responsible for expressing ideas clearly, creating content that serves my audience, and maintaining a consistent, authentic voice across platforms. This role governs content creation, storytelling, teaching, messaging, tone, and how my values are communicated publicly. It ensures that my work builds trust, clarity, and resonance with the people I serve. Here are the details about my audience, content goals, platforms, voice, constraints, preferences, and creative process. Create a master prompt for this role. Ask me all the questions you need to fully understand my communication context so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-indigo-950 text-indigo-200 text-[10px] text-center p-1 font-header">
+                    Role ID: #008
+                </div>
+            </div>
+
+            <!-- 9. Financial Steward -->
+            <div id="financial-steward" class="card-container relative overflow-hidden rounded-xl border-4 border-emerald-800 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-emerald-800 p-2 text-center border-b-4 border-emerald-950">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Financial Steward</h2>
+                    <div class="text-emerald-200 text-[10px] uppercase tracking-widest">Wealth & Security</div>
+                </div>
+                <div class="h-32 bg-emerald-900/40 flex items-center justify-center relative">
+                    <i class="fas fa-coins text-5xl text-emerald-500 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-emerald-800"></div>
+                </div>
+                <div class="flex-1 bg-emerald-50 p-4 relative text-gray-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Financial Steward for my household and long-term security. I am responsible for managing cash flow, budgeting, saving, investing, and making financial decisions that protect stability while enabling future flexibility. This role governs tradeoffs between present needs and long-term goals, risk tolerance, planning, and financial systems. It exists to ensure that my financial choices support the life I am building rather than constrain it. Here are the details about my financial situation, income sources, expenses, goals, constraints, risk tolerance, and planning preferences. Create a master prompt for this role. Ask me all the questions you need to fully understand my financial context so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-emerald-950 text-emerald-200 text-[10px] text-center p-1 font-header">
+                    Role ID: #009
+                </div>
+            </div>
+
+            <!-- 10. Computer & Digital Systems -->
+            <div id="digital-operator" class="card-container relative overflow-hidden rounded-xl border-4 border-cyan-800 bg-gray-800 shadow-2xl flex flex-col">
+                <div class="bg-cyan-800 p-2 text-center border-b-4 border-cyan-950">
+                    <h2 class="font-header text-xl text-white font-bold tracking-wider">Digital Operator</h2>
+                    <div class="text-cyan-200 text-[10px] uppercase tracking-widest">Tech & Systems</div>
+                </div>
+                <div class="h-32 bg-cyan-900/40 flex items-center justify-center relative">
+                    <i class="fas fa-network-wired text-5xl text-cyan-500 opacity-50"></i>
+                    <div class="absolute inset-0 border-b-4 border-cyan-800"></div>
+                </div>
+                <div class="flex-1 bg-cyan-50 p-4 relative text-gray-900 flex items-center">
+                    <p class="text-[11px] leading-snug font-body">
+                        I am the Computer and Digital Systems Operator for my personal and professional life. I am responsible for organizing, maintaining, and optimizing my digital environment so that information is easy to find, systems are reliable, and technology supports my work rather than creating friction. This role governs file organization, folder structures, naming conventions, digital storage, backups, device setup, software tools, password management, email organization, and digital workflows across all devices. It ensures that my computer systems remain secure, efficient, and scalable as my needs evolve. Here are the details about my devices, operating systems, file structures, digital tools, workflows, constraints, preferences, pain points, and organizational goals. Create a master prompt for this role. Ask me all the questions you need to fully understand my digital landscape so you can fill in any gaps and generate a comprehensive master prompt that I can save as a PDF and reuse. Go.
+                    </p>
+                </div>
+                <div class="bg-cyan-950 text-cyan-200 text-[10px] text-center p-1 font-header">
+                    Role ID: #010
+                </div>
+            </div>
+
+        </div>
+        
+        <footer class="text-center mt-12 mb-8 text-gray-500 text-xs">
+            <p>Whole-Life Roles Framework • 5:7 Aspect Ratio optimized for Card Printing</p>
+        </footer>
+    </div>
+
+</body>
+</html>

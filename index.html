@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persona Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .persona-item.active {
+            background-color: rgb(238, 242, 255); /* indigo-50 */
+            border-left: 4px solid #4F46E5;
+        }
+
+        [contenteditable="true"]:hover {
+            background-color: rgba(99, 102, 241, 0.05);
+            border-radius: 4px;
+            cursor: text;
+        }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-100 h-screen flex overflow-hidden text-slate-800">
+
+    <!-- Sidebar: Persona List -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col z-20 shadow-xl">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+            <h2 class="font-bold text-slate-700 text-lg"><i class="fas fa-users text-indigo-600 mr-2"></i>Personas</h2>
+            <button onclick="createNewPersona()" class="w-8 h-8 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 flex items-center justify-center transition shadow-md" title="Add New Persona">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        
+        <!-- List Container -->
+        <div id="persona-list" class="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+            <!-- Items injected by JS -->
+        </div>
+
+        <div class="p-4 border-t border-slate-100 text-xs text-center text-slate-400">
+            Persona Manager v1.0
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 relative flex flex-col h-full bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 overflow-hidden">
+        
+        <!-- Toolbar -->
+        <header class="h-16 flex items-center justify-end px-8 space-x-4">
+            <button onclick="exportToWord()" class="bg-white text-indigo-600 px-4 py-2 rounded-lg shadow-sm border border-indigo-100 hover:shadow-md transition-all font-medium text-sm flex items-center gap-2">
+                <i class="fas fa-file-word"></i> Export .Doc
+            </button>
+        </header>
+
+        <!-- Scrollable Canvas -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-8 flex justify-center items-start">
+            
+            <!-- THE CARD (Reused from previous version) -->
+            <div id="persona-card" class="w-full max-w-5xl bg-white/80 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[650px] border border-white/50 relative mb-12">
+                
+                <!-- Left Column -->
+                <section class="w-full md:w-2/5 bg-white p-8 flex flex-col items-center justify-start border-r border-indigo-50 relative z-10">
+                    <div class="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-indigo-50 to-transparent z-0"></div>
+
+                    <!-- Avatar -->
+                    <div class="relative z-10 avatar-container group mb-4 mt-4">
+                        <div class="w-48 h-48 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 cursor-pointer shadow-lg hover:shadow-indigo-500/30 transition-all" onclick="updateCurrentPersona('avatar')" title="Click to randomize avatar">
+                            <div class="w-full h-full rounded-full bg-white overflow-hidden relative">
+                                <img id="p-avatar" src="" alt="Avatar" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute bottom-2 right-2 bg-white text-indigo-600 rounded-full p-2 shadow-md border border-indigo-50">
+                                <i class="fas fa-dice"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center z-10 w-full mb-6">
+                        <h1 id="p-name" oninput="saveCurrentState()" contenteditable="true" class="text-3xl font-bold text-slate-800 mb-1 outline-none border-b-2 border-transparent focus:border-indigo-300"></h1>
+                        <p id="p-role" oninput="saveCurrentState()" contenteditable="true" class="text-indigo-500 font-medium uppercase tracking-wider text-sm outline-none"></p>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 w-full pt-6 border-t border-slate-100 z-10">
+                        <div class="text-center p-2 rounded hover:bg-slate-50">
+                            <div id="p-level" class="text-xl font-bold text-slate-800">42</div>
+                            <div class="text-xs text-slate-400 uppercase">Level</div>
+                        </div>
+                        <div class="text-center p-2 rounded hover:bg-slate-50 border-l border-r border-slate-100">
+                            <div class="text-xl font-bold text-slate-800">2.4k</div>
+                            <div class="text-xs text-slate-400 uppercase">Rep</div>
+                        </div>
+                        <div class="text-center p-2 rounded hover:bg-slate-50">
+                            <div class="text-xl font-bold text-slate-800">14</div>
+                            <div class="text-xs text-slate-400 uppercase">Proj</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Column -->
+                <section class="w-full md:w-3/5 bg-white/60 backdrop-blur-md flex flex-col relative">
+                    <nav class="flex border-b border-slate-200/60 px-6 pt-6 gap-6">
+                        <button onclick="switchTab('bio')" id="tab-bio" class="tab-btn pb-2 text-sm font-bold text-indigo-600 border-b-2 border-indigo-600">Bio</button>
+                        <button onclick="switchTab('stats')" id="tab-stats" class="tab-btn pb-2 text-sm font-medium text-slate-500 border-b-2 border-transparent hover:text-indigo-600">Stats</button>
+                        <button onclick="switchTab('gear')" id="tab-gear" class="tab-btn pb-2 text-sm font-medium text-slate-500 border-b-2 border-transparent hover:text-indigo-600">Gear</button>
+                    </nav>
+
+                    <div class="flex-1 p-8 overflow-y-auto custom-scrollbar h-[500px]">
+                        
+                        <!-- Bio Tab -->
+                        <div id="content-bio" class="tab-content fade-in">
+                            <h3 class="text-sm font-bold text-slate-400 uppercase mb-2">Biography</h3>
+                            <div id="p-bio" oninput="saveCurrentState()" contenteditable="true" class="text-slate-600 leading-relaxed mb-6 outline-none"></div>
+                            
+                            <h3 class="text-sm font-bold text-slate-400 uppercase mb-2">Notes</h3>
+                            <div id="p-notes" oninput="saveCurrentState()" contenteditable="true" class="bg-yellow-50/50 p-4 rounded-lg text-slate-600 italic border border-yellow-100 outline-none text-sm"></div>
+                        </div>
+
+                        <!-- Stats Tab -->
+                        <div id="content-stats" class="tab-content hidden fade-in space-y-6">
+                            <h3 class="text-sm font-bold text-slate-400 uppercase mb-2">Skills</h3>
+                            <!-- Skills are visual only in this demo, static for now -->
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1 text-sm"><span class="font-medium">Core Skill</span><span class="font-bold text-indigo-600">90%</span></div>
+                                    <div class="h-2 bg-slate-200 rounded-full"><div class="h-2 bg-indigo-500 rounded-full w-[90%]"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1 text-sm"><span class="font-medium">Secondary Skill</span><span class="font-bold text-indigo-600">75%</span></div>
+                                    <div class="h-2 bg-slate-200 rounded-full"><div class="h-2 bg-purple-500 rounded-full w-[75%]"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gear Tab -->
+                        <div id="content-gear" class="tab-content hidden fade-in">
+                            <h3 class="text-sm font-bold text-slate-400 uppercase mb-4">Inventory</h3>
+                            <div class="p-3 bg-white border border-slate-200 rounded-lg shadow-sm flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 bg-slate-800 rounded flex items-center justify-center text-white"><i class="fas fa-laptop"></i></div>
+                                <div><div class="text-sm font-bold">Primary Device</div><div class="text-xs text-slate-500">Tech Item</div></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- 1. DATA MANAGEMENT ---
+        
+        // Default initial data
+        const defaultPersonas = [
+            { id: '1', name: "Alex Rivers", role: "Creative Tech", avatarSeed: "Alex", bio: "Digital nomad specializing in immersive web experiences.", notes: "Needs update on portfolio." },
+            { id: '2', name: "Jordan Lee", role: "Product Manager", avatarSeed: "Jordan", bio: "Expert in agile methodologies and product lifecycles.", notes: "Meeting scheduled for Tuesday." }
+        ];
+
+        // State
+        let personas = defaultPersonas;
+        let activeId = '1';
+
+        // --- 2. APP LOGIC ---
+
+        function init() {
+            renderSidebar();
+            loadPersona(activeId);
+        }
+
+        function renderSidebar() {
+            const listEl = document.getElementById('persona-list');
+            listEl.innerHTML = ''; // Clear list
+
+            personas.forEach(p => {
+                const isActive = p.id === activeId ? 'active' : '';
+                const item = document.createElement('div');
+                item.className = `persona-item p-3 cursor-pointer hover:bg-slate-50 transition-colors border-l-4 border-transparent ${isActive}`;
+                item.onclick = () => loadPersona(p.id);
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=${p.avatarSeed}" class="w-10 h-10 rounded-full bg-white border border-slate-200">
+                        <div class="overflow-hidden">
+                            <h4 class="text-sm font-bold text-slate-700 truncate">${p.name}</h4>
+                            <p class="text-xs text-slate-400 truncate">${p.role}</p>
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        function loadPersona(id) {
+            activeId = id;
+            const p = personas.find(item => item.id === id);
+            
+            // Populate DOM
+            document.getElementById('p-avatar').src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${p.avatarSeed}`;
+            document.getElementById('p-name').innerText = p.name;
+            document.getElementById('p-role').innerText = p.role;
+            document.getElementById('p-bio').innerText = p.bio || "No bio yet...";
+            document.getElementById('p-notes').innerText = p.notes || "Click to add notes...";
+
+            renderSidebar(); // Re-render to update active state styling
+        }
+
+        function createNewPersona() {
+            const newId = Date.now().toString(); // Simple unique ID
+            const newName = "New Persona";
+            const seeds = ['Felix', 'Aneka', 'Zoe', 'Marc', 'Ryker'];
+            const randomSeed = seeds[Math.floor(Math.random() * seeds.length)] + Math.random().toString(36).substring(7);
+
+            const newP = {
+                id: newId,
+                name: newName,
+                role: "Job Title",
+                avatarSeed: randomSeed,
+                bio: "Click here to write a bio...",
+                notes: "Add notes here..."
+            };
+
+            personas.push(newP);
+            loadPersona(newId);
+        }
+
+        function saveCurrentState() {
+            // Find current object
+            const pIndex = personas.findIndex(item => item.id === activeId);
+            if (pIndex === -1) return;
+
+            // Update object with DOM content
+            personas[pIndex].name = document.getElementById('p-name').innerText;
+            personas[pIndex].role = document.getElementById('p-role').innerText;
+            personas[pIndex].bio = document.getElementById('p-bio').innerText;
+            personas[pIndex].notes = document.getElementById('p-notes').innerText;
+
+            // Debounced render (optional, but simplified here to just render on next click or explicitly)
+            // We update the sidebar text immediately for better UX
+            const sidebarItem = document.querySelector(`.persona-item.active h4`);
+            if(sidebarItem) sidebarItem.innerText = personas[pIndex].name;
+            const sidebarRole = document.querySelector(`.persona-item.active p`);
+            if(sidebarRole) sidebarRole.innerText = personas[pIndex].role;
+        }
+
+        function updateCurrentPersona(action) {
+            if (action === 'avatar') {
+                const pIndex = personas.findIndex(item => item.id === activeId);
+                const newSeed = Math.random().toString(36).substring(7);
+                personas[pIndex].avatarSeed = newSeed;
+                loadPersona(activeId);
+            }
+        }
+
+        // --- 3. UI UTILITIES ---
+
+        function switchTab(tab) {
+            ['bio', 'stats', 'gear'].forEach(t => {
+                document.getElementById(`content-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('text-indigo-600', 'border-indigo-600');
+                document.getElementById(`tab-${t}`).classList.add('text-slate-500', 'border-transparent');
+            });
+            document.getElementById(`content-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).classList.add('text-indigo-600', 'border-indigo-600');
+            document.getElementById(`tab-${tab}`).classList.remove('text-slate-500', 'border-transparent');
+        }
+
+        function exportToWord() {
+            // Simplified export that grabs current visible data
+            const name = document.getElementById('p-name').innerText;
+            const content = document.getElementById('persona-card').outerHTML;
+            
+            const html = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>${name}</title></head><body>${content}</body></html>
+            `;
+            
+            const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `${name.replace(/\s+/g, '_')}_Persona.doc`;
+            link.click();
+        }
+
+        // Initialize
+        init();
+
+    </script>
+</body>
+</html>
