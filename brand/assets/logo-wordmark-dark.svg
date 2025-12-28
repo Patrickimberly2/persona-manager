@@ -1,0 +1,14 @@
+<svg width="320" height="80" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="320" y2="80" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED" />
+      <stop offset="1" stop-color="#22D3EE" />
+    </linearGradient>
+  </defs>
+  <rect width="320" height="80" rx="18" fill="#0F172A" />
+  <rect x="18" y="14" width="52" height="52" rx="14" fill="url(#grad)" />
+  <path d="M40 28C44.4183 28 48 31.5817 48 36C48 40.4183 44.4183 44 40 44H34V52H28V28H40Z" fill="white" />
+  <path d="M52 32V52H46V36.5H44V32H52Z" fill="white" opacity="0.9" />
+  <text x="84" y="48" fill="white" font-family="'Space Grotesk', 'Inter', system-ui" font-size="28" font-weight="700">Persona Manager</text>
+  <text x="84" y="64" fill="#A5B4FC" font-family="'Space Grotesk', 'Inter', system-ui" font-size="12" letter-spacing="2">RESEARCH-READY PERSONAS</text>
+</svg>
