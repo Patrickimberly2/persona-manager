@@ -246,9 +246,18 @@
         async function performUptimeCheck() {
             const start = performance.now();
             try {
-                await fetch(monitoringConfig.uptimeUrl, { method: 'HEAD', cache: 'no-store', mode: 'no-cors' });
+                const response = await fetch(monitoringConfig.uptimeUrl, { method: 'GET', cache: 'no-store' });
                 const latency = performance.now() - start;
-                trackEvent('uptime_check', { latency });
+
+                if (response.type === 'opaque') {
+                    throw new Error('Opaque uptime response (missing CORS headers)');
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                trackEvent('uptime_check', { latency, status: response.status });
                 if (latency > monitoringConfig.latencyWarningMs) {
                     showAlert('Latency above threshold. Investigating.');
                 }
