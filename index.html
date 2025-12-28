@@ -40,7 +40,15 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-900 h-screen flex overflow-hidden text-slate-800">
+    <body class="bg-slate-900 h-screen flex overflow-hidden text-slate-800">
+
+    <div id="alert-banner" class="hidden fixed top-4 right-4 z-50 bg-amber-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3">
+        <i class="fas fa-triangle-exclamation"></i>
+        <div>
+            <p class="font-bold text-sm">Monitoring Alert</p>
+            <p id="alert-message" class="text-xs">Investigating elevated error rates.</p>
+        </div>
+    </div>
 
     <!-- Sidebar: Persona List -->
     <aside class="w-72 bg-slate-800 border-r border-slate-700 flex flex-col z-20 shadow-xl">
@@ -156,7 +164,121 @@
         </div>
     </main>
 
+    <!-- Feedback Widget -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <div id="feedback-panel" class="hidden bg-white text-slate-900 rounded-2xl shadow-2xl w-80 p-5 mb-3 border border-slate-200">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-800">We'd love your feedback</h3>
+                    <p class="text-sm text-slate-500">Share bugs, ideas, or request a chat.</p>
+                </div>
+                <button onclick="toggleFeedback()" class="text-slate-400 hover:text-slate-600" aria-label="Close feedback form">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="feedback-form" class="mt-4 space-y-3" onsubmit="submitFeedback(event)">
+                <div class="flex gap-2">
+                    <input required name="name" placeholder="Name" class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input required name="email" type="email" placeholder="Email" class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <select name="type" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="idea">Product idea</option>
+                    <option value="bug">Bug report</option>
+                    <option value="question">Question</option>
+                    <option value="other">Other feedback</option>
+                </select>
+                <textarea required name="message" rows="4" placeholder="Tell us more..." class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                <div class="flex items-center justify-between text-sm text-slate-500">
+                    <a href="mailto:hello@persona-manager.local?subject=Book%20a%20chat" class="flex items-center gap-2 text-indigo-600 font-medium hover:text-indigo-700">
+                        <i class="fas fa-comments"></i> Book a chat
+                    </a>
+                    <span id="feedback-status" class="text-xs"></span>
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Send feedback</button>
+            </form>
+        </div>
+        <button id="feedback-toggle" onclick="toggleFeedback()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 font-semibold">
+            <i class="fas fa-paper-plane"></i> Feedback
+        </button>
+    </div>
+
     <script>
+        // --- Analytics & Monitoring Helpers ---
+        const analyticsConfig = {
+            endpoint: 'https://analytics.persona-manager.local/collect',
+            release: 'v1.0.0'
+        };
+
+        const monitoringConfig = {
+            uptimeUrl: window.location.href,
+            checkIntervalMs: 30000,
+            latencyWarningMs: 1200,
+            errorThreshold: 3
+        };
+
+        let errorCount = 0;
+
+        function trackEvent(name, payload = {}) {
+            const event = {
+                name,
+                payload,
+                release: analyticsConfig.release,
+                ts: new Date().toISOString()
+            };
+
+            try {
+                navigator.sendBeacon?.(analyticsConfig.endpoint, JSON.stringify(event));
+            } catch (err) {
+                console.debug('Analytics beacon skipped', err);
+            }
+
+            console.info('[analytics]', event);
+        }
+
+        function showAlert(message) {
+            const banner = document.getElementById('alert-banner');
+            const text = document.getElementById('alert-message');
+            text.innerText = message;
+            banner.classList.remove('hidden');
+            setTimeout(() => banner.classList.add('hidden'), 8000);
+        }
+
+        async function performUptimeCheck() {
+            const start = performance.now();
+            try {
+                await fetch(monitoringConfig.uptimeUrl, { method: 'HEAD', cache: 'no-store', mode: 'no-cors' });
+                const latency = performance.now() - start;
+                trackEvent('uptime_check', { latency });
+                if (latency > monitoringConfig.latencyWarningMs) {
+                    showAlert('Latency above threshold. Investigating.');
+                }
+            } catch (err) {
+                errorCount += 1;
+                trackEvent('uptime_check_failed', { message: err.message });
+                if (errorCount >= monitoringConfig.errorThreshold) {
+                    showAlert('Repeated uptime failures detected.');
+                }
+            }
+        }
+
+        window.addEventListener('error', (event) => {
+            errorCount += 1;
+            trackEvent('client_error', { message: event.message });
+            if (errorCount >= monitoringConfig.errorThreshold) {
+                showAlert('Error threshold exceeded in client.');
+            }
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            errorCount += 1;
+            trackEvent('unhandled_rejection', { reason: String(event.reason) });
+            if (errorCount >= monitoringConfig.errorThreshold) {
+                showAlert('Unhandled errors need attention.');
+            }
+        });
+
+        setInterval(performUptimeCheck, monitoringConfig.checkIntervalMs);
+
         // --- 1. DATA MANAGEMENT ---
         
         // Default initial data
@@ -174,6 +296,8 @@
         function init() {
             renderSidebar();
             loadPersona(activeId);
+            performUptimeCheck();
+            trackEvent('app_loaded', { activeId });
         }
 
         function renderSidebar() {
@@ -219,6 +343,7 @@
             document.getElementById('p-apps').innerText = p.apps || "List favorite apps...";
 
             renderSidebar(); // Re-render to update active state styling
+            trackEvent('persona_loaded', { id, name: p.name });
         }
 
         function createNewPersona() {
@@ -247,6 +372,7 @@
 
             personas.push(newP);
             loadPersona(newId);
+            trackEvent('persona_created', { id: newId });
         }
 
         function saveCurrentState() {
@@ -275,6 +401,8 @@
             if(sidebarItem) sidebarItem.innerText = personas[pIndex].name;
             const sidebarRole = document.querySelector(`.persona-item.active p`);
             if(sidebarRole) sidebarRole.innerText = personas[pIndex].role;
+
+            trackEvent('persona_updated', { id: activeId });
         }
 
         function updateCurrentPersona(action) {
@@ -283,6 +411,7 @@
                 const newSeed = Math.random().toString(36).substring(7);
                 personas[pIndex].avatarSeed = newSeed;
                 loadPersona(activeId);
+                trackEvent('avatar_randomized', { id: activeId });
             }
         }
 
@@ -314,6 +443,35 @@
             link.href = URL.createObjectURL(blob);
             link.download = `${name.replace(/\s+/g, '_')}_Persona.doc`;
             link.click();
+
+            trackEvent('exported_to_word', { persona: name });
+        }
+
+        // --- Feedback Widget Logic ---
+
+        function toggleFeedback() {
+            const panel = document.getElementById('feedback-panel');
+            panel.classList.toggle('hidden');
+            trackEvent(panel.classList.contains('hidden') ? 'feedback_closed' : 'feedback_opened');
+        }
+
+        function submitFeedback(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const type = formData.get('type');
+            const message = formData.get('message');
+            const status = document.getElementById('feedback-status');
+
+            const subject = encodeURIComponent(`Persona Manager feedback — ${type}`);
+            const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nType: ${type}\n\n${message}`);
+            window.location.href = `mailto:hello@persona-manager.local?subject=${subject}&body=${body}`;
+
+            status.textContent = 'Thanks! Launching your email client...';
+            form.reset();
+            trackEvent('feedback_submitted', { type });
         }
 
         // Initialize
