@@ -20,6 +20,12 @@ Provide a clear, trustworthy hub where teams can discover, customize, and adopt 
 - Return visits and saved/shared persona sets.
 - Newsletter or webinar registrations influenced by persona content pages.
 
+## Architecture & Tooling Decisions
+- **Frontend approach:** Adopt a hybrid Next.js app with server-rendered routes for gallery/detail pages and persona builder flows, while statically pre-rendering marketing content (Home, Resources, Blog listings) for speed. This keeps SEO strong, enables authenticated flows without a separate SPA shell, and still supports CDN-cached static assets for high-traffic pages.
+- **CSS strategy:** Use Tailwind CSS (utility-first) with a small set of design tokens and component recipes (buttons, cards, filters). Tailwind accelerates layouting, keeps the bundle small via purge, and pairs well with a Figma-to-code handoff; component recipes prevent utility sprawl.
+- **Form solution:** Implement forms through Next.js server actions/API routes backed by the primary database/CRM for lead capture and account creation, plus a fallback integration (e.g., Resend or SendGrid) for lightweight contact forms. This keeps data in-house for compliance while allowing quick iterations without relying on third-party form embeds.
+- **Analytics & error monitoring:** Use Plausible for privacy-friendly product analytics (pageviews, conversions) and Sentry for frontend error monitoring and performance traces. Both have first-class Next.js integrations and support self-hosted or EU-friendly deployments.
+
 ## Target Audiences
 - **Product & UX teams:** Need ready-to-use personas to speed discovery and testing.
 - **Marketing strategists:** Seek relatable avatars to tailor campaigns and messaging.
