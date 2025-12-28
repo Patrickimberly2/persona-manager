@@ -48,3 +48,125 @@ Provide a clear, trustworthy hub where teams can discover, customize, and adopt 
 - Collaboration tools (comments, version history, shared collections).
 - Localization for priority markets.
 - Light personalization (recommend personas based on browsing behavior).
+
+## Sitemap
+- **Home**
+  - Featured personas
+  - Product pillars (gallery, builder, pricing, blog)
+  - Testimonials & logos
+  - Newsletter CTA
+- **Personas**
+  - Gallery (filters by role, industry, maturity)
+  - Persona detail pages
+  - Template starter kits
+- **Persona Builder**
+  - Role selector
+  - Avatar customization
+  - Prompt/narrative preview
+  - Save/share flow
+- **Pricing**
+  - Plan comparison
+  - Add-ons and usage limits
+  - FAQ
+  - Checkout
+- **Resources**
+  - Guides/FAQ
+  - Case studies
+  - Webinar signup
+- **Blog**
+  - Category archives
+  - Individual posts
+- **About**
+  - Mission & team
+  - Careers
+  - Press kit
+- **Contact**
+  - Lead/contact form
+  - Sales/email links
+- **Account**
+  - Sign up / log in
+  - Saved persona sets
+  - Billing & settings
+
+## Page Outlines / Wireframe Notes
+### Home
+- **Hero:** Headline with primary CTA (Try the builder) and secondary CTA (View gallery); supporting visual of avatar set.
+- **Value Props:** Three columns for speed, quality, collaboration with short blurbs and icons.
+- **Featured Personas:** Carousel/grid of top persona cards with quick preview and “View detail” buttons.
+- **Workflow Highlight:** Three-step graphic (Select role → Customize → Share) with CTA back to builder.
+- **Testimonials & Logos:** Customer quotes, star ratings, and logo strip.
+- **Content Teasers:** Latest blog posts and guide download card.
+- **Secondary CTA:** Newsletter signup and contact link in footer band.
+
+### Personas (Gallery + Detail)
+- **Gallery Hero:** Filters (role, industry, goal, maturity) and search; CTA to open builder.
+- **Grid/List:** Persona cards with avatar, role, and quick tags; hover for “Preview”/“Download”.
+- **Detail Page:**
+  - Hero with avatar, name, role, summary, and primary CTA (Download/Save).
+  - Tabs for Narrative, Goals/Frustrations, Prompts, Assets.
+  - Related personas and template kits.
+  - Sticky side CTA for sign-up/save.
+
+### Persona Builder
+- **Hero/Intro:** Short explainer and primary CTA to start building; breadcrumb to gallery.
+- **Role Selector:** Stepper with role filters and presets; preview card updates live.
+- **Avatar Customization:** Controls for style, background, and accessories; live preview pane.
+- **Prompt & Narrative Panel:** Editable fields for goals, scenarios, and instructions; AI assist toggle.
+- **Save/Share:** Options to save to account, export, or copy prompt; gated sign-up modal.
+- **Help Strip:** Link to guide and support chat.
+
+### Pricing
+- **Plan Cards:** Free/Pro/Enterprise comparison with CTAs (Start free, Upgrade, Talk to sales).
+- **Feature Table:** Limits (personas/month, exports), collaboration, support tiers.
+- **Add-ons:** Custom avatars, onboarding, SLA.
+- **Social Proof:** Testimonials relevant to ROI.
+- **FAQ:** Top 5 questions; contact CTA.
+- **Checkout:** Embedded form or link to payment flow.
+
+### Resources
+- **Hero:** Value statement for learning; CTA to download starter kit.
+- **Guides/FAQ:** Cards linking to guides; accordion FAQ.
+- **Case Studies:** Highlight 2–3 stories with metrics.
+- **Webinar Signup:** Upcoming/live sessions with registration CTA.
+- **Support CTA:** Link to contact/help desk.
+
+### Blog
+- **Listing:** Featured post on top, followed by latest posts with tags and author info.
+- **Sidebar:** Categories, newsletter signup, most-read posts.
+- **Post Template:** Title/hero image, metadata, share buttons, in-article CTA, related posts.
+
+### About
+- **Hero:** Mission statement and snapshot metrics (customers, assets created).
+- **Team:** Photos/bios of leadership; link to LinkedIn.
+- **Careers:** Hiring blurb and link to openings.
+- **Press Kit:** Download logos, product shots, and boilerplate copy.
+- **Values/Approach:** Short pillars on research, inclusivity, quality.
+
+### Contact
+- **Lead Form:** Fields for name, email, role, use case, timeline.
+- **Contact Methods:** Sales email, support chat link, office hours.
+- **Map/Footprint:** Service regions or office.
+- **CTA:** “Talk to an expert” scheduling link.
+
+### Account
+- **Auth Screens:** Sign up/login with SSO options.
+- **Dashboard:** Recent persona sets, recommended assets, quick actions (Build new, Upload avatar).
+- **Billing & Settings:** Plan, invoices, payment methods, team members.
+
+## Asset Inventory & Owners
+| Asset | Description | Owner/Author |
+| --- | --- | --- |
+| Logo suite (light/dark/SVG/PNG) | Brand marks for site, press, and downloads | Design lead |
+| Persona avatar set | Core illustrated avatars used across gallery/detail pages | Design lead |
+| Role cards | Standardized persona/role card layouts with prompts | Product design |
+| Homepage hero copy | Headline, subhead, and CTA labels | Content strategist |
+| Value prop blurbs | Short benefits for speed/quality/collaboration | Content strategist |
+| Testimonials | Curated quotes with names/titles | Marketing ops |
+| Plan/pricing copy | Plan names, feature bullets, limits, and legal notes | Product marketing |
+| Blog articles | Thought leadership and release notes | Editorial lead |
+| Guides/FAQ content | PDF/downloadable guides and FAQ entries | Customer education |
+| Webinar assets | Landing copy, speaker bios, registration link | Events manager |
+| Press kit | Logo bundle, product shots, boilerplate text | Communications |
+| UI screenshots | Updated UI/flow captures for gallery and builder | Product design |
+| CTA buttons & forms | Text strings for CTAs, form field labels, confirmation copy | UX writer |
+| Legal pages | Privacy, terms, data processing addendum | Legal counsel |
