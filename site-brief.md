@@ -25,6 +25,20 @@ Provide a clear, trustworthy hub where teams can discover, customize, and adopt 
 - **CSS strategy:** Use Tailwind CSS (utility-first) with a small set of design tokens and component recipes (buttons, cards, filters). Tailwind accelerates layouting, keeps the bundle small via purge, and pairs well with a Figma-to-code handoff; component recipes prevent utility sprawl.
 - **Form solution:** Implement forms through Next.js server actions/API routes backed by the primary database/CRM for lead capture and account creation, plus a fallback integration (e.g., Resend or SendGrid) for lightweight contact forms. This keeps data in-house for compliance while allowing quick iterations without relying on third-party form embeds.
 - **Analytics & error monitoring:** Use Plausible for privacy-friendly product analytics (pageviews, conversions) and Sentry for frontend error monitoring and performance traces. Both have first-class Next.js integrations and support self-hosted or EU-friendly deployments.
+- **Performance budgets:** Enforce Core Web Vitals budgets in CI and observability: LCP ≤ 2.5s on 75th percentile mobile, FID/INP ≤ 100ms, CLS ≤ 0.1. Bundle-level budgets include JS ≤ 170KB gzipped per route (marketing) and ≤ 250KB for authenticated flows; image assets served in modern formats (AVIF/WebP) with responsive sizes and preloading of above-the-fold hero assets. Target TTFB ≤ 200ms via edge caching/CDN for static content and ISR where applicable.
+
+## Accessibility Plan
+- Keyboard navigation: Ensure every interactive element is reachable via logical tab order with visible focus states that meet 3:1 contrast; trap focus in modals and provide Escape to close.
+- Forms & controls: Associate labels with inputs, provide descriptive error messaging, and ensure controls expose native semantics (use buttons for actions, links for navigation).
+- Color & contrast: Use tokens that pass WCAG AA (4.5:1 for text, 3:1 for large text/icons) and avoid color-only indicators; add light/dark theme checks.
+- ARIA & landmarks: Use semantic HTML first; add ARIA attributes only where necessary (tabs, dialogs, toasts). Include landmarks for header/nav/main/footer and assign accessible names to widgets like carousels.
+- Media & motion: Provide alt text for avatars and illustrative images; respect reduced-motion preferences for animations and parallax.
+
+## SEO & Sharing Standards
+- URL structure: Use clean, kebab-case routes (e.g., `/personas/<role>-<industry>`, `/blog/<slug>`, `/resources/<category>/<slug>`). Avoid query parameters for canonical content; include pagination and filter parameters with canonical tags.
+- Metadata pattern: Compose titles as `<Page Name> | Persona Manager` and meta descriptions ≤ 155 chars with action-oriented summaries. Include structured data (BreadcrumbList, Article for blog posts, Product for persona kits) where applicable.
+- Open Graph & Twitter: Set OG title/description matching meta, `og:type` (`website`, `article`, or `product`), canonical URLs, and 1200x630 images; include `twitter:card` (`summary_large_image`).
+- Indexing: Generate `sitemap.xml` and `robots.txt` at build/deploy; block staging domains and non-canonical preview routes. Add `noindex` to experimental or gated routes when appropriate.
 
 ## Target Audiences
 - **Product & UX teams:** Need ready-to-use personas to speed discovery and testing.
