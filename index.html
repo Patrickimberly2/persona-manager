@@ -246,9 +246,24 @@
         async function performUptimeCheck() {
             const start = performance.now();
             try {
-                await fetch(monitoringConfig.uptimeUrl, { method: 'HEAD', cache: 'no-store', mode: 'no-cors' });
+                const response = await fetch(monitoringConfig.uptimeUrl, {
+                    method: 'HEAD',
+                    cache: 'no-store',
+                    mode: 'no-cors'
+                });
                 const latency = performance.now() - start;
-                trackEvent('uptime_check', { latency });
+
+                if (response.type === 'opaque') {
+                    trackEvent('uptime_check_opaque', { latency });
+                    console.warn('Received opaque uptime response; status unavailable.');
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Unexpected status ${response.status}`);
+                }
+
+                trackEvent('uptime_check', { latency, status: response.status });
                 if (latency > monitoringConfig.latencyWarningMs) {
                     showAlert('Latency above threshold. Investigating.');
                 }
