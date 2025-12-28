@@ -1,0 +1,10 @@
+{
+  "name": "persona-manager",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "bash ./scripts/ci/lint.sh",
+    "format": "bash ./scripts/ci/format.sh",
+    "test": "bash ./scripts/ci/test.sh"
+  }
+}
