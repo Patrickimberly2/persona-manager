@@ -246,9 +246,13 @@
         async function performUptimeCheck() {
             const start = performance.now();
             try {
-                await fetch(monitoringConfig.uptimeUrl, { method: 'HEAD', cache: 'no-store', mode: 'no-cors' });
+                const response = await fetch(monitoringConfig.uptimeUrl, { method: 'HEAD', cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
                 const latency = performance.now() - start;
-                trackEvent('uptime_check', { latency });
+                trackEvent('uptime_check', { latency, status: response.status });
                 if (latency > monitoringConfig.latencyWarningMs) {
                     showAlert('Latency above threshold. Investigating.');
                 }
