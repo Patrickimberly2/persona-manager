@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Persona Manager Design System</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-indigo-700: #4F46E5;
+      --brand-indigo-500: #6366F1;
+      --brand-cyan-400: #22D3EE;
+      --brand-plum-500: #7C3AED;
+      --brand-amber-400: #F59E0B;
+      --brand-emerald-500: #10B981;
+      --ink-900: #0F172A;
+      --ink-700: #1F2937;
+      --ink-500: #334155;
+      --ink-300: #CBD5E1;
+      --ink-100: #E2E8F0;
+      --surface-50: #F8FAFC;
+      --surface-100: #F1F5F9;
+      --surface-200: #E2E8F0;
+      --surface-900: #0B1021;
+      --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.12);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --space-0: 4px;
+      --space-1: 8px;
+      --space-2: 12px;
+      --space-3: 16px;
+      --space-4: 20px;
+      --space-5: 24px;
+      --space-6: 32px;
+      --space-7: 40px;
+      --space-8: 48px;
+      --font-heading: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-body);
+      background: linear-gradient(135deg, #0F172A, #111827 40%, #0B1021);
+      color: #E2E8F0;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-6);
+      gap: var(--space-4);
+      background: rgba(241, 245, 249, 0.04);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.08);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(14px);
+    }
+
+    h1, h2, h3, h4 { font-family: var(--font-heading); margin: 0; color: #F8FAFC; }
+    h1 { font-size: 32px; letter-spacing: -0.02em; }
+    h2 { font-size: 24px; margin-bottom: var(--space-3); }
+    p { margin: 0; color: #CBD5E1; }
+    a { color: var(--brand-cyan-400); }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: var(--space-6) var(--space-6) var(--space-8); display: grid; gap: var(--space-6); }
+
+    .card {
+      background: rgba(248, 250, 252, 0.04);
+      border: 1px solid rgba(226, 232, 240, 0.08);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); }
+    .swatch { border-radius: var(--radius-md); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+    .swatch strong { color: #0B1021; }
+    .swatch small { color: rgba(15, 23, 42, 0.7); }
+
+    .swatch.dark strong { color: #F8FAFC; }
+    .swatch.dark small { color: rgba(226, 232, 240, 0.8); }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4); }
+
+    .token-list { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+    .token { padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); background: rgba(226, 232, 240, 0.1); color: #E2E8F0; font-family: var(--font-mono); font-size: 13px; }
+
+    .logo-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-3); align-items: center; }
+    .logo-tile { background: #0F172A; border: 1px solid rgba(226, 232, 240, 0.12); border-radius: var(--radius-md); padding: var(--space-3); display: flex; flex-direction: column; gap: var(--space-2); }
+    .logo-tile.light { background: #F8FAFC; color: #0F172A; }
+    .logo-tile img { width: 100%; border-radius: var(--radius-sm); }
+
+    .component { display: flex; flex-direction: column; gap: var(--space-2); }
+    .component-row { display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center; }
+
+    .btn { font-family: var(--font-heading); font-weight: 600; padding: 12px 18px; border-radius: var(--radius-md); border: 1px solid transparent; cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease, background 160ms ease; letter-spacing: -0.01em; }
+    .btn:focus-visible { outline: 2px solid var(--brand-cyan-400); outline-offset: 2px; box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.18); }
+    .btn-primary { background: linear-gradient(135deg, var(--brand-indigo-500), var(--brand-plum-500)); color: #fff; box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(124, 58, 237, 0.38); }
+    .btn-primary:active { transform: translateY(0); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.28); }
+    .btn-ghost { background: rgba(248, 250, 252, 0.08); color: #E2E8F0; border-color: rgba(226, 232, 240, 0.12); }
+    .btn-ghost:hover { background: rgba(248, 250, 252, 0.14); }
+    .btn-ghost:active { background: rgba(248, 250, 252, 0.18); }
+    .btn-outline { background: transparent; color: var(--brand-cyan-400); border-color: rgba(34, 211, 238, 0.5); }
+    .btn-outline:hover { background: rgba(34, 211, 238, 0.08); }
+
+    .input { width: 100%; padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(226, 232, 240, 0.2); background: rgba(15, 23, 42, 0.75); color: #E2E8F0; font-size: 15px; }
+    .input:hover { border-color: rgba(226, 232, 240, 0.45); }
+    .input:focus { border-color: var(--brand-cyan-400); box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.18); outline: none; }
+    .input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .card-ui { background: linear-gradient(160deg, rgba(248, 250, 252, 0.08), rgba(34, 211, 238, 0.05)); border: 1px solid rgba(226, 232, 240, 0.12); border-radius: var(--radius-lg); padding: var(--space-5); box-shadow: var(--shadow-soft); color: #E2E8F0; }
+    .card-ui h3 { margin-bottom: var(--space-2); font-size: 18px; }
+    .card-ui footer { display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-4); color: #CBD5E1; font-size: 14px; }
+
+    .nav { display: flex; gap: var(--space-3); align-items: center; padding: var(--space-3); border-radius: var(--radius-md); background: rgba(248, 250, 252, 0.05); border: 1px solid rgba(226, 232, 240, 0.1); }
+    .nav a { text-decoration: none; color: #E2E8F0; padding: 10px 12px; border-radius: var(--radius-sm); transition: background 120ms ease, color 120ms ease; font-weight: 600; }
+    .nav a:hover { background: rgba(248, 250, 252, 0.08); }
+    .nav a:focus-visible { outline: 2px solid var(--brand-amber-400); outline-offset: 2px; }
+    .nav a.active { color: var(--brand-cyan-400); background: rgba(34, 211, 238, 0.1); }
+
+    footer { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid rgba(226, 232, 240, 0.08); color: #94A3B8; display: flex; align-items: center; justify-content: space-between; font-size: 14px; }
+    footer .social { display: flex; gap: var(--space-3); }
+    footer .social a { color: #CBD5E1; text-decoration: none; }
+    footer .social a:hover { color: var(--brand-cyan-400); }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <p style="margin-bottom: 6px; letter-spacing: 0.08em; text-transform: uppercase; color: #94A3B8; font-weight: 600;">Persona Manager</p>
+      <h1>Brand & UI Design System</h1>
+    </div>
+    <div class="component-row">
+      <button class="btn btn-outline">Download pack</button>
+      <button class="btn btn-primary">Use this spec</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Brand marks & favicon</h2>
+      <div class="logo-row">
+        <div class="logo-tile">
+          <img src="assets/logo-wordmark-dark.svg" alt="Dark wordmark" />
+          <p>Dark canvas wordmark for application chrome and presentations.</p>
+        </div>
+        <div class="logo-tile light">
+          <img src="assets/logo-wordmark-light.svg" alt="Light wordmark" />
+          <p>Light canvas wordmark for documents, emails, and white backgrounds.</p>
+        </div>
+        <div class="logo-tile" style="text-align:center;">
+          <img src="assets/favicon.svg" alt="Favicon" style="max-width:120px; margin: 0 auto;" />
+          <p>Favicon / app icon built from the PM monogram with gradient core.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Color palette</h2>
+      <p style="margin-bottom: var(--space-4);">Primary gradient expresses energy; neutrals keep layouts calm. Reserve accent colors for CTA, success, and highlights.</p>
+      <div class="swatches">
+        <div class="swatch" style="background: linear-gradient(135deg, var(--brand-indigo-500), var(--brand-plum-500));">
+          <strong>Primary Gradient</strong>
+          <small>#6366F1 → #7C3AED</small>
+          <small>Buttons, hero, active states</small>
+        </div>
+        <div class="swatch" style="background: var(--brand-cyan-400);">
+          <strong>Accent Cyan</strong>
+          <small>#22D3EE</small>
+          <small>Links, focus rings, data viz</small>
+        </div>
+        <div class="swatch" style="background: var(--brand-amber-400);">
+          <strong>Amber</strong>
+          <small>#F59E0B</small>
+          <small>Warnings & emphasis</small>
+        </div>
+        <div class="swatch" style="background: var(--brand-emerald-500);">
+          <strong>Success Emerald</strong>
+          <small>#10B981</small>
+          <small>Success, confirmations</small>
+        </div>
+        <div class="swatch dark" style="background: var(--ink-900);">
+          <strong>Ink 900</strong>
+          <small>#0F172A</small>
+          <small>Backgrounds</small>
+        </div>
+        <div class="swatch dark" style="background: var(--ink-700);">
+          <strong>Ink 700</strong>
+          <small>#1F2937</small>
+          <small>Cards & shells</small>
+        </div>
+        <div class="swatch" style="background: var(--surface-50); border: 1px solid var(--surface-200);">
+          <strong>Surface 50</strong>
+          <small>#F8FAFC</small>
+          <small>Light backgrounds & cards</small>
+        </div>
+        <div class="swatch" style="background: var(--ink-300);">
+          <strong>Neutral 300</strong>
+          <small>#CBD5E1</small>
+          <small>Borders & dividers</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Typography</h2>
+      <div class="grid">
+        <div>
+          <p style="text-transform: uppercase; letter-spacing: 0.08em; color: #94A3B8;">Headings</p>
+          <h3 style="font-size: 28px; margin: 0 0 var(--space-2);">Space Grotesk</h3>
+          <p style="line-height: 1.6;">Use for H1–H4, navigation, and call-to-action text. Track slightly tight (-2%).</p>
+        </div>
+        <div>
+          <p style="text-transform: uppercase; letter-spacing: 0.08em; color: #94A3B8;">Body</p>
+          <h3 style="font-family: var(--font-body); font-size: 18px; margin: 0 0 var(--space-2);">Inter</h3>
+          <p style="line-height: 1.7;">Use for paragraphs, form labels, meta text, and data tables. Keep comfortable line height (1.6–1.7).</p>
+        </div>
+        <div>
+          <p style="text-transform: uppercase; letter-spacing: 0.08em; color: #94A3B8;">Code/Data</p>
+          <h3 style="font-family: var(--font-mono); font-size: 18px; margin: 0 0 var(--space-2);">IBM Plex Mono</h3>
+          <p style="line-height: 1.6;">For prompts, token values, and technical snippets.</p>
+        </div>
+      </div>
+      <div class="token-list" style="margin-top: var(--space-4);">
+        <span class="token">H1 32 / 1.2</span>
+        <span class="token">H2 24 / 1.3</span>
+        <span class="token">H3 18 / 1.4</span>
+        <span class="token">Body 16 / 1.6</span>
+        <span class="token">Caption 14 / 1.5</span>
+        <span class="token">Label 12 / 1.4</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Spacing & layout rhythm</h2>
+      <p style="margin-bottom: var(--space-3);">Use the 4/8px-derived scale for padding, gaps, and margins. Combine spacing tokens with radius tokens for consistent cards and inputs.</p>
+      <div class="token-list">
+        <span class="token">Space 0 = 4px</span>
+        <span class="token">Space 1 = 8px</span>
+        <span class="token">Space 2 = 12px</span>
+        <span class="token">Space 3 = 16px</span>
+        <span class="token">Space 4 = 20px</span>
+        <span class="token">Space 5 = 24px</span>
+        <span class="token">Space 6 = 32px</span>
+        <span class="token">Space 7 = 40px</span>
+        <span class="token">Space 8 = 48px</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Component patterns</h2>
+      <div class="grid">
+        <div class="component">
+          <h3>Buttons</h3>
+          <div class="component-row">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-ghost">Ghost</button>
+            <button class="btn btn-outline">Outline</button>
+          </div>
+          <p>States: hover lifts 1px; focus-visible shows cyan ring; active returns to rest with reduced shadow. Disabled reduces opacity to 50% and blocks pointer events.</p>
+        </div>
+        <div class="component">
+          <h3>Form fields</h3>
+          <input class="input" placeholder="Label / helper text" />
+          <p>States: default muted border; hover darkens border; focus adds cyan ring and shadow; disabled lowers opacity. For errors, switch border to Amber (#F59E0B) with matching helper text.</p>
+        </div>
+        <div class="component">
+          <h3>Cards</h3>
+          <div class="card-ui">
+            <h3>Persona Snapshot</h3>
+            <p>Summaries for galleries, dashboards, and templates. Use 20–24px padding and 12–16px radius.</p>
+            <footer>
+              <span>Last updated 2d ago</span>
+              <button class="btn btn-ghost" style="padding: 10px 14px;">Open</button>
+            </footer>
+          </div>
+          <p>States: on hover, elevate shadow by +15% and shift up 2px; on active, reduce shadow and reset translation; focus-visible adds cyan outline.</p>
+        </div>
+        <div class="component">
+          <h3>Navigation & footer</h3>
+          <nav class="nav">
+            <a class="active" href="#">Home</a>
+            <a href="#">Personas</a>
+            <a href="#">Builder</a>
+            <a href="#">Pricing</a>
+          </nav>
+          <footer>
+            <span>Persona Manager © 2024</span>
+            <div class="social">
+              <a href="#">Docs</a>
+              <a href="#">Changelog</a>
+              <a href="#">Support</a>
+            </div>
+          </footer>
+          <p>States: active links use cyan and subtle fill; hover lightens background; focus-visible shows amber outline to differentiate from primary actions.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
