@@ -27,6 +27,9 @@ module "dns" {
   cloudflare_account_id  = var.cloudflare_account_id
   zone_name              = var.zone_name
   plan                   = var.cloudflare_plan
+  manage_zone            = false
+  manage_zone_settings   = false
+  create_prod_record     = false
   prod_hostname          = var.prod_hostname
   staging_hostname       = var.staging_hostname
   prod_target            = var.prod_target

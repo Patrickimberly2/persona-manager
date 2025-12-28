@@ -1,5 +1,7 @@
 resource "cloudflare_zone_settings_override" "https" {
-  zone_id = cloudflare_zone.this.id
+  count = var.manage_zone_settings ? 1 : 0
+
+  zone_id = local.zone_id
 
   settings {
     ssl               = "full"
