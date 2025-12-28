@@ -38,7 +38,12 @@ jobs:
 
       - name: Terraform Init
         working-directory: terraform/environments/prod
-        run: terraform init -backend-config=../backend-example.hcl
+        run: terraform init \
+          -backend-config="bucket=${{ vars.PROD_TF_STATE_BUCKET }}" \
+          -backend-config="key=persona-manager/prod/terraform.tfstate" \
+          -backend-config="region=${{ vars.TF_STATE_REGION }}" \
+          -backend-config="dynamodb_table=${{ vars.TF_STATE_LOCK_TABLE }}" \
+          -backend-config="encrypt=true"
 
       - name: Terraform Plan
         id: plan

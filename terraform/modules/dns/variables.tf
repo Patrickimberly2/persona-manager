@@ -8,6 +8,30 @@ variable "cloudflare_account_id" {
   type        = string
 }
 
+variable "manage_zone" {
+  description = "Whether this stack should manage the Cloudflare zone resource (and zone-level settings). Only one environment should set this to true to avoid state collisions."
+  type        = bool
+  default     = true
+}
+
+variable "manage_zone_settings" {
+  description = "Whether to manage zone-level settings such as DNSSEC and HTTPS enforcement. Should align with manage_zone to keep a single owner."
+  type        = bool
+  default     = true
+}
+
+variable "create_prod_record" {
+  description = "Create or manage the production DNS record from this stack."
+  type        = bool
+  default     = true
+}
+
+variable "create_staging_record" {
+  description = "Create or manage the staging DNS record from this stack."
+  type        = bool
+  default     = true
+}
+
 variable "plan" {
   description = "Cloudflare plan name"
   type        = string
